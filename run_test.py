@@ -6,12 +6,6 @@ import shutil
 import subprocess
 from Obfuscations.Obfuscation import Obfuscation
 
-class ObfType(Enum):
-    ENCODED = 0
-    VAR_SUB = 1
-    CONSTANT_HIDING = 2
-    CODE_INJECTION = 3
-
 def create_build_files(project_root):
     # copy all files into from root to /.generated
     generated_root = f"{project_root}/.generated"
@@ -37,7 +31,14 @@ def create_build_files(project_root):
                 raise BaseException(f"Could not move file: {filename}")
 
 def apply_obfuscation(root, obfuscation):
-    pass
+    type = Obfuscation.get_by_name(obfuscation)
+    if(type == None):
+        raise BaseException(f"Could not find obfuscation type: {obfuscation}")
+    
+    # Create object of type and apply
+    obf = type()
+    obf.apply(root)
+
 
 def build(project_path):
     if(not os.path.exists(f"{project_path}\\.generated\\build.ps1")):
@@ -45,7 +46,7 @@ def build(project_path):
     os.chdir(f"{project_path}\\.generated")
     subprocess.Popen("powershell .\\build.ps1")
 
-def build_project(project_path:str, obfuscations: List[ObfType]) -> None:
+def build_project(project_path:str, obfuscations: List[str]) -> None:
     # Make a copy of the project files in .generated
     create_build_files(project_path)
     
@@ -56,12 +57,9 @@ def build_project(project_path:str, obfuscations: List[ObfType]) -> None:
     # Build the project
     build(project_path)
 
-    t = Obfuscation.get_by_name("VarSub")
-    print(f"T={t}")
-    
     # Upload the exe to VirusTotal
         # CALL YOUR CODE HERE
 
 
 if __name__ == "__main__":
-    build_project("TEST", [ObfType.VAR_SUB])
+    build_project("E:\\programmering\\python 3\\test", ["Encode"])
