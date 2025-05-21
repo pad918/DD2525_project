@@ -8,49 +8,66 @@ load_dotenv()
 
 url_upload = "https://www.virustotal.com/api/v3/files"
 url_analysis = "https://www.virustotal.com/api/v3/analyses/"
+API_KEY = os.getenv("API_KEY")
 
 def upload_file(file_path, meta_data):
-    API_KEY = os.getenv("API_KEY")
-    file_name = "decoder.exe"
+    file_name = os.path.basename(file_path)
     files = {"file": (file_name, open(file_path, "rb"), "application/x-msdownload")}
     headers = {
         "accept": "application/json",
         "x-apikey": API_KEY
     }
-    with open("data.json", "r+") as file:
+    if not os.path.exists("data.json"):
+        with open("data.json", "w") as f:
+            json.dump({"uploads": []}, f, indent=4)
+    with open("data.json", "r") as file:
         db = json.load(file)
-    res = requests.post(url_upload, files=files, headers=headers)
-    print(res.text)
-    data = json.loads(res.text)
-    analys_id = data["data"]["id"]
 
-    new_upload = {
-        "virustotal_id": analys_id,
-        "name": "name",
-        "filename": "filename",
-        "obfuscation": "obfuscation",
-        "type_of_malware": "type",
-        "upload_date": "date",
-        "data": []
-    }
+    try:
+        res = requests.post(url_upload, files=files, headers=headers)
+        res.raise_for_status()
+        data = json.loads(res.text)
+        analys_id = data["data"]["id"]
 
-    db["uploads"].append(new_upload)
-    with open('data.json', 'w') as f:
-        json.dump(db, f, indent=4)
+        new_upload = {
+            "virustotal_id": analys_id,
+            "name": "name? of virus idk",
+            "filename": file_name,
+            "obfuscation": "obfuscation",
+            "type_of_malware": "type",
+            "upload_date": "date",
+            "data": []
+        }
+        db["uploads"].append(new_upload)
+        with open('data.json', 'w') as f:
+            json.dump(db, f, indent=4)
+        print(f"Uploaded {file_name} to virustotal")
+    except Exception:
+        exit(f"Error uploading file {file_name}, {res.text}")
 
 def update_database_uploads():
-    API_KEY = os.getenv("API_KEY")
     headers = {
         "accept": "application/json",
         "x-apikey": API_KEY
     }
+    if not os.path.exists("data.json"):
+        exit("No item to update, upload an item first")
     with open("data.json", "r+") as file:
         db = json.load(file)
 
     for upload in db["uploads"]:
         analys_id = upload["virustotal_id"]
-        analysis_res = requests.get(url_analysis + analys_id, headers=headers)
-        upload["data"].append(analysis_res.json())
+        try:
+            analysis_res = requests.get(url_analysis + analys_id, headers=headers)
+            analysis_res.raise_for_status()
+            upload["data"].append(analysis_res.json())
+            print()
+            if upload["data"][0]["data"]["attributes"]["status"] != "completed":
+                print(f"{analys_id} not completed, try again later")
+            else:
+                print(f"File {analys_id} Updated")
+        except Exception as e:
+            exit(f"Error getting status for {analys_id} {e}")
 
     with open('data.json', 'w') as f:
         json.dump(db, f, indent=4)
@@ -70,10 +87,10 @@ def get_ids():
 
 
 
-get_ids()
-print(get_stats_from_id("MzRjMWI1ODhhNDkwNTQ5NjA3OGEzOGJhOGFhZmU1MDM6MTc0NzgzNjA5Mg=="))
-#upload_file("decoder.exe", {})
-#update_database_uploads()
+#get_ids()
+#print(get_stats_from_id("MzRjMWI1ODhhNDkwNTQ5NjA3OGEzOGJhOGFhZmU1MDM6MTc0NzgzNjA5Mg=="))
+# upload_file("../Obfuscations/Encode.py", {})
+# update_database_uploads()
 
 
 
