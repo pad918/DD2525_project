@@ -1,9 +1,9 @@
-# Used to bulid a project exe using a set of obfuscation techniques
 from enum import Enum
 from typing import List
 import os
 import shutil
 import subprocess
+import glob
 from Obfuscations.Obfuscation import Obfuscation
 
 def create_build_files(project_root):
@@ -44,9 +44,10 @@ def build(project_path):
     if(not os.path.exists(f"{project_path}\\.generated\\build.ps1")):
         return -1
     os.chdir(f"{project_path}\\.generated")
-    subprocess.Popen("powershell .\\build.ps1")
+    process = subprocess.Popen("powershell .\\build.ps1")
+    process.wait()
 
-def build_project(project_path:str, obfuscations: List[str]) -> None:
+def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
     # Make a copy of the project files in .generated
     create_build_files(project_path)
     
@@ -57,9 +58,17 @@ def build_project(project_path:str, obfuscations: List[str]) -> None:
     # Build the project
     build(project_path)
 
+    files = glob.glob(f"{project_path}\\.generated\\*.exe")
+    if (len(files)==1):
+        exe_path = files[0]
+    else:
+        raise BaseException("Build failed, no exe found")
+
+    print(f"Found the new exe at: {exe_path}")
+    
     # Upload the exe to VirusTotal
         # CALL YOUR CODE HERE
 
 
 if __name__ == "__main__":
-    build_project("E:\\programmering\\python 3\\test", ["Encode"])
+    test_obfuscations("E:\\programmering\\python 3\\test", ["Encode"])
