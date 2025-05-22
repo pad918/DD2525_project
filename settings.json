@@ -1,6 +1,6 @@
 [
     {
         "project_folder": ".\\examples\\BTC-Clipper",
-        "obfuscations": ["VarSub"]
+        "obfuscations": ["VarSub", "ConstSub"]
     }
 ]
