@@ -93,8 +93,8 @@ if __name__ == "__main__":
                 continue
             test_obfuscations(project_path, obfuscations)
             # Fetch data from uploaded files
-            print("Sleeping for 5s, and fetching data")
-            time.sleep(5)
+            print("Sleeping for 20s, and fetching data")
+            time.sleep(20)
             update_database_uploads()
 
 

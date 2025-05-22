@@ -2,6 +2,7 @@ from Obfuscations.Obfuscation import Obfuscation
 from Obfuscations.VarSub import VarSub
 from Obfuscations.Encode import Encode
 from Obfuscations.ConstSub import ConstSub
+from Obfuscations.DeadCode import DeadCode
 
 # Register all existing obfuscations here
 import sys, inspect
