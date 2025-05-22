@@ -5,6 +5,8 @@ import shutil
 import subprocess
 import glob
 from Obfuscations.Obfuscation import Obfuscation
+import json
+import tqdm
 
 def create_build_files(project_root):
     # copy all files into from root to /.generated
@@ -41,7 +43,9 @@ def apply_obfuscation(root, obfuscation):
 
 
 def build(project_path):
-    if(not os.path.exists(f"{project_path}\\.generated\\build.ps1")):
+    abs_path = os.path.abspath(project_path)
+    build_script_path = os.path.join(abs_path, "\\.generated\\build.ps1")
+    if(not os.path.exists(build_script_path)):
         return -1
     os.chdir(f"{project_path}\\.generated")
     process = subprocess.Popen("powershell .\\build.ps1")
@@ -71,4 +75,15 @@ def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
 
 
 if __name__ == "__main__":
-    test_obfuscations("E:\\programmering\\python 3\\test", ["Encode"])
+    with open("settings.json", "rb") as f:
+        settings = json.load(f)
+    for test in tqdm.tqdm(settings):
+        try:
+            project_path = test.get("project_path")
+            obfuscations = test.get("obfuscations")
+            if(project_path==None or obfuscations==None):
+                print(f"Invalid parameters for test: {test}")
+                continue
+            test_obfuscations("E:\\programmering\\python 3\\test", ["Encode"])
+        except BaseException as e:
+            print(f"Failed to test: {test}")
