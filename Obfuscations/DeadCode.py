@@ -4,7 +4,7 @@ from Obfuscations.Obfuscation import Obfuscation
 import glob
 import os
 
-# Works by inserting statements for each lines of code in origional file
+# Works by inserting statements for each lines of code in original file
 def get_ast(file_path):
     with open(file_path, "rt", encoding="utf-8") as f:
         python_code = f.read()
@@ -23,7 +23,7 @@ class DeadCodeInsertionTransformer(cst.CSTTransformer):
             "if is_prime_check: print('test')",
         ]
 
-    def _get_dead_code_block_nodes(self):
+    def get_dead_code_block_nodes(self):
         statements = []
         for template in self._dead_code_templates:
             parsed_module = cst.parse_module(template)
@@ -32,7 +32,7 @@ class DeadCodeInsertionTransformer(cst.CSTTransformer):
 
         return statements
 
-    def _generate_dead_code_statements(self):
+    def generate_dead_code_statements(self):
         statements = []
         # insert x times
         for _ in range(1):
@@ -42,7 +42,7 @@ class DeadCodeInsertionTransformer(cst.CSTTransformer):
         return statements
 
     def leave_Module(self, original_node, updated_node):
-        dead_code_block_nodes = self._get_dead_code_block_nodes()
+        dead_code_block_nodes = self.get_dead_code_block_nodes()
         new_body_statements = []
         for stmt in updated_node.body:
             new_body_statements.extend(dead_code_block_nodes)
@@ -52,7 +52,7 @@ class DeadCodeInsertionTransformer(cst.CSTTransformer):
 
     def leave_FunctionDef(self, original_node, updated_node):
         original_function_stmts = updated_node.body.body
-        dead_code_block_nodes = self._get_dead_code_block_nodes()
+        dead_code_block_nodes = self.get_dead_code_block_nodes()
         new_function_body_stmts = []
         for stmt in original_function_stmts:
             new_function_body_stmts.extend(dead_code_block_nodes)
@@ -73,10 +73,10 @@ class DeadCode(Obfuscation):
         print(f"Found {len(files)} Python files to obfuscate.")
         for file_path in files:
             print(f"Processing file: {file_path}")
-            self._apply_single(file_path)
+            self.apply_single(file_path)
         print("Dead code insertion complete.")
 
-    def _apply_single(self, file_path):
+    def apply_single(self, file_path):
         try:
             tree = get_ast(file_path)
             wrapper = cst.metadata.MetadataWrapper(tree)
