@@ -1,6 +1,6 @@
 [
     {
-        "proj_folder": ".\\examples\\btc_clipper",
+        "project_folder": ".\\examples\\BTC-Clipper",
         "obfuscations": ["Encode"]
     }
 ]

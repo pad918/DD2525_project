@@ -44,13 +44,18 @@ def apply_obfuscation(root, obfuscation):
 
 
 def build(project_path):
+    # Save old dir
+    prev_dir = os.getcwd()
+
     abs_path = os.path.abspath(project_path)
-    build_script_path = os.path.join(abs_path, "\\.generated\\build.ps1")
+    build_script_path = os.path.join(abs_path, ".generated", "build.ps1")
     if(not os.path.exists(build_script_path)):
         return -1
     os.chdir(f"{project_path}\\.generated")
     process = subprocess.Popen("powershell .\\build.ps1")
     process.wait()
+    # Return to original dir
+    os.chdir(prev_dir)
 
 def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
     # Make a copy of the project files in .generated
@@ -62,8 +67,8 @@ def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
 
     # Build the project
     build(project_path)
-
-    files = glob.glob(f"{project_path}\\.generated\\*.exe")
+    exe_search_pattern = os.path.join(os.path.abspath(project_path), ".generated", "*.exe")
+    files = glob.glob(exe_search_pattern)
     if (len(files)==1):
         exe_path = files[0]
     else:
@@ -80,11 +85,12 @@ if __name__ == "__main__":
         settings = json.load(f)
     for test in tqdm.tqdm(settings):
         try:
-            project_path = test.get("project_path")
-            obfuscations = test.get("obfuscations")
+            project_path = test["project_folder"]
+            obfuscations = test["obfuscations"]
             if(project_path==None or obfuscations==None):
                 print(f"Invalid parameters for test: {test}")
                 continue
-            test_obfuscations("E:\\programmering\\python 3\\test", ["Encode"])
+            test_obfuscations(project_path, obfuscations)
         except BaseException as e:
             print(f"Failed to test: {test}")
+            raise e
