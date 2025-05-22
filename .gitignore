@@ -2,6 +2,7 @@ __pycache__/
 .venv/
 .env
 Virustotal/data.json
+data.json
 /.idea/
 
 # Do not include the projects tested
