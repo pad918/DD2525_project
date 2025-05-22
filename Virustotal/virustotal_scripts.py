@@ -54,8 +54,8 @@ def upload_file(file_path, obfuscations):
         new_upload = {
             "virustotal_id": analys_id,
             "filename": file_name,
-            "path": file_size,
-            "size_bytes": os.path.getsize(file_path),
+            "path": file_path,
+            "size_bytes": file_size,
             "sha-256 hash": hashlib.sha256(encoded_file_path).hexdigest(),
             "obfuscation": obfuscations,
             "upload_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -115,5 +115,8 @@ def get_ids():
 
 # get_ids()
 # print(get_stats_from_id("MzRjMWI1ODhhNDkwNTQ5NjA3OGEzOGJhOGFhZmU1MDM6MTc0NzgzNjA5Mg=="))
+# upload_file("../Obfuscations/Encode.py", ["Encryption", "test"])
+
 if __name__ == "__main__":
     update_database_uploads()
+
