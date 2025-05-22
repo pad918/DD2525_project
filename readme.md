@@ -2,11 +2,11 @@
 
 ## How to use
 
-Run ```bash uv sync```
+Run ```uv sync```
 
 Change settings in settings.json
 
-Run ```bash uv run run_test.py```
+Run ```uv run run_test.py```
 
 
 ## Requirements
