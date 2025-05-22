@@ -4,10 +4,11 @@ import os
 import shutil
 import subprocess
 import glob
-from Virustotal.virustotal_scripts import upload_file
+from Virustotal.virustotal_scripts import upload_file, update_database_uploads
 from Obfuscations.Obfuscation import Obfuscation
 import json
 import tqdm
+import time
 
 def create_build_files(project_root):
     # copy all files into from root to /.generated
@@ -91,6 +92,12 @@ if __name__ == "__main__":
                 print(f"Invalid parameters for test: {test}")
                 continue
             test_obfuscations(project_path, obfuscations)
+            # Fetch data from uploaded files
+            print("Sleeping for 5s, and fetching data")
+            time.sleep(5)
+            update_database_uploads()
+
+
         except BaseException as e:
             print(f"Failed to test: {test}")
             raise e
