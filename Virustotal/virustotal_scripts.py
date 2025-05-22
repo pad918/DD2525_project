@@ -115,5 +115,5 @@ def get_ids():
 
 # get_ids()
 # print(get_stats_from_id("MzRjMWI1ODhhNDkwNTQ5NjA3OGEzOGJhOGFhZmU1MDM6MTc0NzgzNjA5Mg=="))
-upload_file("../Obfuscations/Encode.py", ["Encryption", "test"])
-# update_database_uploads()
+if __name__ == "__main__":
+    update_database_uploads()

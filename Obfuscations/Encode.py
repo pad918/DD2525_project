@@ -11,8 +11,7 @@ class Encode(Obfuscation):
     
     def apply(self, root):
 
-        project_root = root #"E:\\programmering\\python 3\\test"
-        print(f"Using project root: {project_root}")
+        project_root = root
         files = glob.glob(f"{project_root}/**py", recursive=True)
         for file in files:
             self._encode_single(file)
