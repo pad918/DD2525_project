@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 import glob
+from Virustotal.virustotal_scripts import upload_file
 from Obfuscations.Obfuscation import Obfuscation
 import json
 import tqdm
@@ -71,7 +72,7 @@ def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
     print(f"Found the new exe at: {exe_path}")
     
     # Upload the exe to VirusTotal
-        # CALL YOUR CODE HERE
+    upload_file(exe_path, obfuscations)
 
 
 if __name__ == "__main__":

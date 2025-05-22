@@ -2,3 +2,5 @@ __pycache__/
 .venv/
 .env
 Virustotal/data.json
+/.idea/
+/.idea
