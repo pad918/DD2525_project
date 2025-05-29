@@ -43,6 +43,8 @@ def apply_obfuscation(root, obfuscation):
     obf.apply(root)
 
 def zip_project(project_path:str, zip_destination:str):
+    if os.path.exists(zip_destination):
+        shutil.rmtree(zip_destination)
     if(zip_destination.endswith(".zip")):
         zip_destination = zip_destination[:-4]
     shutil.make_archive(zip_destination, "zip", project_path)
