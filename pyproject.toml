@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "dotenv>=0.9.9",
+    "gitpython>=3.1.44",
     "libcst>=1.7.0",
     "py2exe>=0.13.0.2",
     "pyinstaller>=6.13.0",
