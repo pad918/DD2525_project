@@ -27,7 +27,7 @@ def create_build_files(project_root):
 
         source_path = os.path.join(project_root, filename)
         destination_path = os.path.join(generated_root, filename)
-        if os.path.isfile(source_path): # Copy all files
+        if os.path.isfile(source_path) and source_path.endswith(".py"): # Copy only python files
             print(f"Including file: {filename}")
             try:
                 shutil.copy(source_path, destination_path)
@@ -75,11 +75,14 @@ def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
     for obf in obfuscations:
         apply_obfuscation(obuscated_project_root, obf)
 
+    # Get project name: 
+    proj_zip_name = os.path.split(project_path)[-1] + ".zip"
+
     # Zip the poject
-    zip_project(obuscated_project_root, "proj.zip")
+    zip_project(obuscated_project_root, proj_zip_name)
     
     # Upload the exe to VirusTotal
-    upload_file("proj.zip", obfuscations)
+    upload_file(proj_zip_name, obfuscations)
 
 
 if __name__ == "__main__":
