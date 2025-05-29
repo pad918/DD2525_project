@@ -55,27 +55,32 @@ def upload_file(file_path, obfuscations):
     try:
         res = requests.post(url, files=files, headers=headers)
         res.raise_for_status()
-        data = json.loads(res.text)
-        analys_id = data["data"]["id"]
-        encoded_file_path = file_path.encode('utf-8')
-
-        new_upload = {
-            "virustotal_id": analys_id,
-            "filename": file_name,
-            "path": file_path,
-            "size_bytes": file_size,
-            "sha-256 hash": hash_file,
-            "obfuscation": obfuscations,
-            "upload_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "data": None
-        }
-        db["uploads"].append(new_upload)
-        with open('data.json', 'w') as f:
-            json.dump(db, f, indent=4)
-        print(f"Uploaded {file_name} to virustotal", f"url: https://www.virustotal.com/gui/file/{hash_file}")
+        
+    except requests.exceptions.HTTPError as e:
+        if(e.errno == 409):
+            print("Already exists")
+        else:
+            raise e
     except Exception as e:
-        exit(f"Error uploading file {file_name}, {res.text}, {e}")
-
+        print(f"Error uploading file {file_name}, {res.text}, {e}")
+        raise e
+    
+    data = json.loads(res.text)
+    analys_id = data["data"]["id"]
+    new_upload = {
+        "virustotal_id": analys_id,
+        "filename": file_name,
+        "path": file_path,
+        "size_bytes": file_size,
+        "sha-256 hash": hash_file,
+        "obfuscation": obfuscations,
+        "upload_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "data": None
+    }
+    db["uploads"].append(new_upload)
+    with open('data.json', 'w') as f:
+        json.dump(db, f, indent=4)
+    print(f"Uploaded {file_name} to virustotal", f"url: https://www.virustotal.com/gui/file/{hash_file}")
 
 def update_database_uploads():
     headers = {

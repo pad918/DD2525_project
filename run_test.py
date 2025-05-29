@@ -10,6 +10,7 @@ import time
 import shutil
 import libcst
 import stat
+import zipfile
 
 def create_build_files(project_root):
     project_root = os.path.abspath(project_root)
@@ -41,9 +42,16 @@ def apply_obfuscation(root, obfuscation):
 def zip_project(project_path:str, zip_destination:str):
     if os.path.exists(zip_destination):
         os.remove(zip_destination)
-    if(zip_destination.endswith(".zip")):
-        zip_destination = zip_destination[:-4]
-    shutil.make_archive(zip_destination, "zip", project_path)
+    def zipdir(path, ziph):
+        for root, dirs, files in os.walk(project_path):
+            for file in [f for f in files if f.endswith(".py")]:
+                ziph.write(os.path.join(root, file), 
+                           os.path.relpath(os.path.join(root, file), 
+                                           os.path.join(path, '..')))
+
+    with zipfile.ZipFile(zip_destination, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        zipdir(project_path, zipf)
+
 
 def build(project_path):
     # Save old dir
@@ -94,7 +102,6 @@ if __name__ == "__main__":
             # Fetch data from uploaded files
             print("Sleeping for 15s, and fetching data")
             time.sleep(15)
-            update_database_uploads()
 
         except libcst._exceptions.ParserSyntaxError as e:
             print(f"Unable to parse project: {project_path}, maybe python 2?")
@@ -102,3 +109,6 @@ if __name__ == "__main__":
         except BaseException as e:
             print(f"Failed to test: {test}")
             raise e
+    time.sleep(120)
+    update_database_uploads()
+    print("DONE!")
