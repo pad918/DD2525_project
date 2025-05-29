@@ -98,7 +98,12 @@ class VarSub(Obfuscation):
     # Obs! This could cause problems in multi-file programs with function imports?
     # TODO: Fix this problem above
     def _apply_single(self, py_file_path):
-        tree = get_ast(py_file_path)
+        try:
+            tree = get_ast(py_file_path)
+        except BaseException as e:
+            print(f"Could not parse file: {py_file_path}")
+            return
+
         wrapper = cst.metadata.MetadataWrapper(tree)
 
         transformer = RenamingTransformer()
