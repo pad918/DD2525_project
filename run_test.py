@@ -8,6 +8,7 @@ import json
 import tqdm
 import time
 import shutil
+import libcst
 
 def create_build_files(project_root):
     # copy all files into from root to /.generated
@@ -93,11 +94,13 @@ if __name__ == "__main__":
                 continue
             test_obfuscations(project_path, obfuscations)
             # Fetch data from uploaded files
-            print("Sleeping for 20s, and fetching data")
-            time.sleep(20)
+            print("Sleeping for 15s, and fetching data")
+            time.sleep(15)
             update_database_uploads()
 
-
+        except libcst._exceptions.ParserSyntaxError as e:
+            print(f"Unable to parse project: {project_path}, maybe python 2?")
+            raise e
         except BaseException as e:
             print(f"Failed to test: {test}")
             raise e

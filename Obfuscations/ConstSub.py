@@ -25,7 +25,15 @@ class ConstantObfuscationTransformer(cst.CSTTransformer):
     
     # Simple integer obfuscation
     def leave_Integer(self, original_node, updated_node):
-        new_expr = cst.parse_expression(f"int({int(updated_node.value)-100}+100)")
+        # Special case base16
+        if(updated_node.value.lower().startswith("0x")):
+            new_expr = cst.parse_expression(f"int({int(updated_node.value, base="16")-100}+100)")
+        # Special case for octal (does it exist in python???)
+        elif(updated_node.value.lower().startswith("0")):
+            new_expr = cst.parse_expression(f"int({int(updated_node.value, base="8")-100}+100)")
+        # Normal case
+        else:
+            new_expr = cst.parse_expression(f"int({int(updated_node.value)-100}+100)")
         return new_expr
 
 class ConstSub(Obfuscation):
