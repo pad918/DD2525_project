@@ -44,7 +44,7 @@ def apply_obfuscation(root, obfuscation):
 
 def zip_project(project_path:str, zip_destination:str):
     if os.path.exists(zip_destination):
-        shutil.rmtree(zip_destination)
+        os.remove(zip_destination)
     if(zip_destination.endswith(".zip")):
         zip_destination = zip_destination[:-4]
     shutil.make_archive(zip_destination, "zip", project_path)
@@ -78,7 +78,7 @@ def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
     zip_project(obuscated_project_root, "proj.zip")
     
     # Upload the exe to VirusTotal
-    #upload_file("proj.zip", obfuscations)
+    upload_file("proj.zip", obfuscations)
 
 
 if __name__ == "__main__":

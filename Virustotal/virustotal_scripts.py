@@ -67,7 +67,7 @@ def upload_file(file_path, obfuscations):
             "sha-256 hash": hash_file,
             "obfuscation": obfuscations,
             "upload_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "data": []
+            "data": None
         }
         db["uploads"].append(new_upload)
         with open('data.json', 'w') as f:
@@ -93,9 +93,9 @@ def update_database_uploads():
         try:
             analysis_res = requests.get(url_analysis + analys_id, headers=headers)
             analysis_res.raise_for_status()
-            upload["data"].append(analysis_res.json())
+            upload["data"] = analysis_res.json()
             print()
-            if upload["data"][0]["data"]["attributes"]["status"] != "completed":
+            if upload["data"]["data"]["attributes"]["status"] != "completed":
                 print(f"{analys_id} not completed, try again later")
             else:
                 print(f"File {filename}, {analys_id} Updated")
