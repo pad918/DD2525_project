@@ -1,14 +1,13 @@
-from enum import Enum
 from typing import List
 import os
 import shutil
 import subprocess
-import glob
 from Virustotal.virustotal_scripts import upload_file, update_database_uploads
 from Obfuscations.Obfuscation import Obfuscation
 import json
 import tqdm
 import time
+import shutil
 
 def create_build_files(project_root):
     # copy all files into from root to /.generated
@@ -27,7 +26,7 @@ def create_build_files(project_root):
 
         source_path = os.path.join(project_root, filename)
         destination_path = os.path.join(generated_root, filename)
-        if os.path.isfile(source_path) and (filename.endswith('.py') or filename.endswith(".ps1")):
+        if os.path.isfile(source_path): # Copy all files
             print(f"Including file: {filename}")
             try:
                 shutil.copy(source_path, destination_path)
@@ -43,6 +42,10 @@ def apply_obfuscation(root, obfuscation):
     obf = type()
     obf.apply(root)
 
+def zip_project(project_path:str, zip_destination:str):
+    if(zip_destination.endswith(".zip")):
+        zip_destination = zip_destination[:-4]
+    shutil.make_archive(zip_destination, "zip", project_path)
 
 def build(project_path):
     # Save old dir
@@ -59,26 +62,21 @@ def build(project_path):
     os.chdir(prev_dir)
 
 def test_obfuscations(project_path:str, obfuscations: List[str]) -> None:
+    
     # Make a copy of the project files in .generated
     create_build_files(project_path)
     
+    obuscated_project_root = f"{project_path}\\.generated"
+    
     # Apply all the obfuscations in order
     for obf in obfuscations:
-        apply_obfuscation(f"{project_path}\\.generated", obf)
+        apply_obfuscation(obuscated_project_root, obf)
 
-    # Build the project
-    build(project_path)
-    exe_search_pattern = os.path.join(os.path.abspath(project_path), ".generated", "*.exe")
-    files = glob.glob(exe_search_pattern)
-    if (len(files)==1):
-        exe_path = files[0]
-    else:
-        raise BaseException("Build failed, no exe found")
-
-    print(f"Found the new exe at: {exe_path}")
+    # Zip the poject
+    zip_project(obuscated_project_root, "proj.zip")
     
     # Upload the exe to VirusTotal
-    upload_file(exe_path, obfuscations)
+    #upload_file("proj.zip", obfuscations)
 
 
 if __name__ == "__main__":

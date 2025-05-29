@@ -3,7 +3,6 @@ from Obfuscations.Obfuscation import Obfuscation
 import glob
 import libcst as cst
 import libcst.metadata as metadata
-import random
 
 def get_ast(file_path):
     with open(file_path, "rt", encoding="utf-8") as f:
