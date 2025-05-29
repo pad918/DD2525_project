@@ -8,3 +8,5 @@ data.json
 # Do not include the projects tested
 examples/
 
+# No generated files
+*.zip
