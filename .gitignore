@@ -11,3 +11,5 @@ examples/
 # No generated files
 *.zip
 settings.json
+
+data*.json

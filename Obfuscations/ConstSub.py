@@ -3,6 +3,7 @@ from Obfuscations.Obfuscation import Obfuscation
 import glob
 import libcst as cst
 import libcst.metadata as metadata
+import os
 
 def get_ast(file_path):
     with open(file_path, "rt", encoding="utf-8") as f:
@@ -40,7 +41,7 @@ class ConstSub(Obfuscation):
 
     def apply(self, root):
         project_root = root
-        files = glob.glob(f"{project_root}/**py", recursive=True)
+        files = glob.glob(os.path.join(root, "**", "*.py"), recursive=True)
         for file in files:
             self._apply_single(file)
 

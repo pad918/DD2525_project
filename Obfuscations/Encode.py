@@ -1,6 +1,7 @@
 from Obfuscations.Obfuscation import Obfuscation
 import base64
 import glob
+import os
 
 class Encode(Obfuscation):
     
@@ -8,7 +9,7 @@ class Encode(Obfuscation):
     def apply(self, root):
 
         project_root = root
-        files = glob.glob(f"{project_root}/**py", recursive=True)
+        files = glob.glob(os.path.join(root, "**", "*.py"), recursive=True)
         for file in files:
             self._encode_single(file)
 

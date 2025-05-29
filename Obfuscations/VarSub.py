@@ -60,6 +60,8 @@ class RenamingTransformer(cst.CSTTransformer):
 
         # Do not rename built in variables / functions
         names = scope.get_qualified_names_for(original_node)
+
+        name_key = None
         # Test if the name is defined in builtin scope!
         if(len(names)==1):
             for n in names:
@@ -89,7 +91,7 @@ class VarSub(Obfuscation):
 
     def apply(self, root):
         # Find all python files
-        files = glob.glob(os.path.join(root, "**py"), recursive=True)
+        files = glob.glob(os.path.join(root, "**", "*.py"), recursive=True)
         for file in files:
             self._apply_single(file)
         

@@ -9,30 +9,25 @@ import tqdm
 import time
 import shutil
 import libcst
+import stat
 
 def create_build_files(project_root):
+    project_root = os.path.abspath(project_root)
+
     # copy all files into from root to /.generated
     generated_root = f"{project_root}/.generated"
     if os.path.exists(generated_root):
-        shutil.rmtree(generated_root)
-    os.makedirs(generated_root)
+        shutil.rmtree(generated_root, onerror=rm_error)
+    shutil.copytree(project_root, generated_root)
 
-    for filename in os.listdir(project_root):
-        if(generated_root in filename):
-            continue
+def rm_error(func, path, exc_info):
+    # Is the error an access error?
+    if not os.access(path, os.W_OK):
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+    else:
+        raise
 
-        # Skip venv and build folders
-        if ("venv" in filename or "__pycache__" in filename):
-            continue
-
-        source_path = os.path.join(project_root, filename)
-        destination_path = os.path.join(generated_root, filename)
-        if os.path.isfile(source_path) and source_path.endswith(".py"): # Copy only python files
-            print(f"Including file: {filename}")
-            try:
-                shutil.copy(source_path, destination_path)
-            except Exception as e:
-                raise BaseException(f"Could not move file: {filename}")
 
 def apply_obfuscation(root, obfuscation):
     type = Obfuscation.get_by_name(obfuscation)
