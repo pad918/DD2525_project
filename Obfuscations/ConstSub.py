@@ -23,14 +23,10 @@ class ConstantObfuscationTransformer(cst.CSTTransformer):
             return original_node
         if("\\" in updated_node.value):
             return updated_node
-        if(original_node in self.concatenated_strings):
-            print("FOUND IT")
-            return original_node
 
         quote_type = updated_node.quote
         new_str = f"{quote_type}{updated_node.raw_value[::-1]}{quote_type}[::-1]"
         new_expr = cst.parse_expression(new_str)
-        print(f"{updated_node.value} --> {new_str}")
         return new_expr
     
     # Concatenated strings
@@ -65,7 +61,6 @@ class ConstSub(Obfuscation):
 
     def _apply_single(self, py_file_path):
         try:
-            print(f"LOOKING AT FILE: {py_file_path}")
             tree = get_ast(py_file_path)
             wrapper = cst.metadata.MetadataWrapper(tree)
 
