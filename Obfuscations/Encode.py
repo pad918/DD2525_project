@@ -1,10 +1,6 @@
 from Obfuscations.Obfuscation import Obfuscation
 import base64
 import glob
-import os
-import shutil
-import subprocess
-import sys
 
 class Encode(Obfuscation):
     

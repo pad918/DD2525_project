@@ -1,9 +1,7 @@
-from enum import Enum
 from typing import List
 import os
 import shutil
 import subprocess
-import glob
 from Virustotal.virustotal_scripts import upload_file, update_database_uploads
 from Obfuscations.Obfuscation import Obfuscation
 import json
