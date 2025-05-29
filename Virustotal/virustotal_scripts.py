@@ -57,7 +57,7 @@ def upload_file(file_path, obfuscations):
         res.raise_for_status()
         
     except requests.exceptions.HTTPError as e:
-        if(e.errno == 409):
+        if(e.response.status_code == 409):
             print("Already exists")
         else:
             raise e
