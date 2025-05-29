@@ -10,3 +10,4 @@ examples/
 
 # No generated files
 *.zip
+settings.json
