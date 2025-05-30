@@ -3,8 +3,13 @@ import json
 
 def generate_row(data):
     proj_name = data['filename'][:-len(".zip")]
-    obfuscation_methods = " ".join([d[:1] for d in data["obfuscation"]])
-
+    obfuscation_methods_list = [
+        ("$"+d[:1] + "_1$" if d == "Encode" else
+         "$"+d[:1] + "_2$" if d == "Encrypt" else
+         d[:1])
+        for d in data["obfuscation"]
+    ]
+    obfuscation_methods = " ".join(obfuscation_methods_list)
     status = data['data']['data']['attributes']['status']
     if(status != "completed"):
         return None
@@ -44,7 +49,7 @@ def generate_comp_table(json_data):
         print(" & ".join(values) + " \\\\")
     
     # CALCULATE AVG
-    values = ["Avrage"]
+    values = ["Average"]
     values.extend(["{:.2f}".format(sum([all_vals[j][i] for j in range(len(all_vals))])/len(all_vals)) for i in range(len(all_vals[0]))])
     print(" & ".join(values) + " \\\\")
 
