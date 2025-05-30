@@ -26,14 +26,13 @@ class RenamingTransformer(cst.CSTTransformer):
         self._curr_function = None
 
     def visit_ClassDef(self, node: cst.ClassDef) -> bool:
-        """Called when entering a ClassDef. Store the current class."""
         self._current_class = node
         return True
 
     def leave_ClassDef(
         self, original_node: cst.ClassDef, updated_node: cst.ClassDef
     ) -> cst.ClassDef:
-        """Called when leaving a ClassDef. Reset the current class."""
+
         self._current_class = None
         return updated_node
 
@@ -44,9 +43,7 @@ class RenamingTransformer(cst.CSTTransformer):
     def leave_Name(
         self, original_node: cst.Name, updated_node: cst.Name
     ) -> cst.Name:
-        """
-        Called after visiting a Name node. We modify the node here.
-        """
+
         # Get the scope associated with this Name node
         try:
             scope = self.get_metadata(metadata.ScopeProvider, original_node)
@@ -95,8 +92,6 @@ class VarSub(Obfuscation):
         for file in files:
             self._apply_single(file)
         
-    # Obs! This could cause problems in multi-file programs with function imports?
-    # TODO: Fix this problem above
     def _apply_single(self, py_file_path):
         try:
             tree = get_ast(py_file_path)
