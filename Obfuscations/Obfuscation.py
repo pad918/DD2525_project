@@ -16,5 +16,5 @@ class Obfuscation:
     
     def register(obf_name, class_name):
         Obfuscation.__registered[obf_name] = class_name
-        print(f"Applied: {obf_name}")
+        print(f"Registered: {obf_name}")
     

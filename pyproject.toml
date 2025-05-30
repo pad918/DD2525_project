@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "cryptography>=45.0.3",
     "dotenv>=0.9.9",
     "gitpython>=3.1.44",
     "libcst>=1.7.0",
