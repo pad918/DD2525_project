@@ -16,46 +16,34 @@ class DeadCodeInsertionTransformer(cst.CSTTransformer):
 
     def __init__(self):
         super().__init__()
-        # Dead code to insert
-        self._dead_code_templates = [
-            "import random",
-            "temp_var_1 = 5 * 7",
-            "is_prime_check = all(random.randint(1000,4671) % i != 0 for i in range(2, int(random.randint(1000,4671)**0.5) + 1))",
-            "if is_prime_check: print('test')",
-        ]
 
-    def generate_dead_code_statements(self):
-        statements = []
-        repeat = 1
-        # insert x times
-        for _ in range(repeat):
-            for template in self._dead_code_templates:
-                parsed_module = cst.parse_module(template)
-                statements.append(parsed_module.body[0])
-        return statements
+    """
+    Replace each line with a condition that is always true like
+    
+        Input: 
+            x = cool_func()
 
-    def leave_Module(self, original_node, updated_node):
-        dead_code_block_nodes = self.generate_dead_code_statements()
-        new_body_statements = []
-        for stmt in updated_node.body:
-            new_body_statements.extend(dead_code_block_nodes)
-            new_body_statements.append(stmt)
+        Output:
+            if(is_prime(23)):
+                x = cool_func()
 
-        return updated_node.with_changes(body=tuple(new_body_statements))
+    """
+    def leave_SimpleStatementLine(self, original_node, updated_node):
 
-    def leave_FunctionDef(self, original_node, updated_node):
-        original_function_stmts = updated_node.body.body
-        dead_code_block_nodes = self.generate_dead_code_statements()
-        new_function_body_stmts = []
-        for stmt in original_function_stmts:
-            new_function_body_stmts.extend(dead_code_block_nodes)
-            new_function_body_stmts.append(stmt)
-
-        new_function_body = updated_node.body.with_changes(
-            body=tuple(new_function_body_stmts)
+        body = cst.IndentedBlock(
+            body = [updated_node]
         )
-        return updated_node.with_changes(body=new_function_body)
-
+        
+        if_statement = cst.If(
+            test = cst.Name("True"),
+            body=body,
+            leading_lines=[]
+        )
+        # Add node to the if block 
+        print(if_statement)
+        print("----------")
+        print(updated_node)
+        return if_statement
 
 class AdvancedDeadCode(Obfuscation):
     def apply(self, root):
@@ -78,3 +66,4 @@ class AdvancedDeadCode(Obfuscation):
             print(f"Successfully inserted dead code into {file_path}")
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
+            print(e)
