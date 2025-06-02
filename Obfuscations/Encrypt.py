@@ -12,7 +12,7 @@ class Encrypt(Obfuscation):
         for file in files:
             self._encode_single(file)
 
-    # Replace single program with python encoded version
+    # Replace single program with python encrypted version
     def _encode_single(self, file):
         if "__pycache__" in file or "venv" in file:
             return

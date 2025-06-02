@@ -4,7 +4,6 @@ from Obfuscations.Encode import Encode
 from Obfuscations.ConstSub import ConstSub
 from Obfuscations.DeadCode import DeadCode
 from Obfuscations.Encrypt import Encrypt
-from Obfuscations.AdvancedDeadCode import AdvancedDeadCode
 
 # Register all existing obfuscations here
 import sys, inspect
