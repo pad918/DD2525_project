@@ -24,3 +24,4 @@ Run ```uv run .\Virustotal\virustotal_scripts.py``` to fetch updated results
 * Windows (only tested platform)
 * Python 3.11
 * UV installed
+* Git
