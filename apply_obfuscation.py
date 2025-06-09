@@ -3,7 +3,7 @@ import os
 import sys
 from Obfuscations import Obfuscation
 
-DEBUG = True
+DEBUG = False
 
 def apply_obfuscation(root, obfuscation):
     type = Obfuscation.get_by_name(obfuscation)

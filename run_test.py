@@ -104,8 +104,8 @@ if __name__ == "__main__":
             time.sleep(15)
 
         except libcst._exceptions.ParserSyntaxError as e:
-            print(f"Unable to parse project: {project_path}, maybe python 2?")
-            raise e
+            print(f"FAILED TO TEST PROJECT: {project_path}")
+            print(f"\tERROR! PARSE ERROR, incorrect syntax, maybe python 2?")
         except BaseException as e:
             print(f"Failed to test: {test}")
             raise e
