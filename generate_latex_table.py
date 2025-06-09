@@ -6,6 +6,7 @@ def generate_row(data):
     obfuscation_methods_list = [
         ("$"+d[:1] + "_1$" if d == "Encode" else
          "$"+d[:1] + "_2$" if d == "Encrypt" else
+         "-" if d == "" else
          d[:1])
         for d in data["obfuscation"]
     ]
