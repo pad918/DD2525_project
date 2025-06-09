@@ -10,7 +10,7 @@ def generate_row(data):
          d[:1])
         for d in data["obfuscation"]
     ]
-    obfuscation_methods = " ".join(obfuscation_methods_list)
+    obfuscation_methods = " ".join(obfuscation_methods_list) if len(data["obfuscation"])>0 else "-"
     status = data['data']['data']['attributes']['status']
     if(status != "completed"):
         return None
