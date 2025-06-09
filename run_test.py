@@ -11,6 +11,7 @@ import shutil
 import libcst
 import stat
 import zipfile
+import glob
 
 def create_build_files(project_root):
     project_root = os.path.abspath(project_root)
@@ -20,6 +21,12 @@ def create_build_files(project_root):
     if os.path.exists(generated_root):
         shutil.rmtree(generated_root, onerror=rm_error)
     shutil.copytree(project_root, generated_root)
+    
+    # Rename all *.pyw files to *.py in .generated
+    for f in glob.glob(os.path.join(generated_root, "*.pyw")):
+        # Rename to *.py
+        os.rename(f, f[:-1])
+
 
 def rm_error(func, path, exc_info):
     # Is the error an access error?
