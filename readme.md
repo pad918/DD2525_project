@@ -18,7 +18,7 @@ See the results in the generated ```data.json``` file
 
 (in case that virustotal is slow and hasnt completed analysis)
 
-Run ```uv run .\Virustotal\virustotal_scripts.py``` to fetch updated results
+Run ```uv run .\Virustotal\vt_file_upload.py``` to fetch updated results
 
 ## Requirements
 * Windows (only tested platform)
