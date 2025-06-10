@@ -25,9 +25,9 @@ if __name__ == "__main__":
                     # If its detected
                     if result_data["category"] in ["malicious", "suspicious"]:
                         anti_malware_dict[name]["hits"] += 1
-    sorted = dict(sorted(anti_malware_dict.items(), key=lambda item: item[1]['hits'], reverse=True))
-    print(sorted)
-    for name, data in sorted.items():
+    sorted_dict = dict(sorted(anti_malware_dict.items(), key=lambda item: item[1]['hits'], reverse=True))
+    # Latex table gen
+    for name, data in sorted_dict.items():
         hits = data['hits']
         scans = data['scans']
         if (hits or scans) > 0:

@@ -2,7 +2,7 @@ from typing import List
 import os
 import shutil
 import subprocess
-from Virustotal.virustotal_scripts import upload_file, update_database_uploads
+from Virustotal.vt_file_upload import upload_file, update_database_uploads
 from Obfuscations.Obfuscation import Obfuscation
 import json
 import tqdm
