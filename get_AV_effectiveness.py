@@ -20,14 +20,15 @@ if __name__ == "__main__":
 
         for name, result_data in results.items():
             if name in anti_malware_dict:
-                anti_malware_dict[name]["scans"] += 1
-                # If its detected
-                if result_data.get("category") in ["malicious", "suspicious"]:
-                    anti_malware_dict[name]["hits"] += 1
+                if not result_data.get("category") in ["type-unsupported"]:
+                    anti_malware_dict[name]["scans"] += 1
+                    # If its detected
+                    if result_data.get("category") in ["malicious", "suspicious"]:
+                        anti_malware_dict[name]["hits"] += 1
     sorted = dict(sorted(anti_malware_dict.items(), key=lambda item: item[1]['hits'], reverse=True))
     print(sorted)
     for name, data in sorted.items():
-
         hits = data['hits']
         scans = data['scans']
-        print(f"{name} & {hits} & {scans}  & {round(hits / scans, 2)} \\\\")
+        if (hits or scans) > 0:
+            print(f"{name} & {hits} & {scans}  & {round(hits / scans, 2)} \\\\")
