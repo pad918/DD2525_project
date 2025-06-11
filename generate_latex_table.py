@@ -22,37 +22,42 @@ def generate_row(data):
     return f"{' & '.join(facts)} \\\\"
 
 def generate_comp_table(json_data):
+    columns = ["", "ConstSub", "DeadCode", "Encode", "Encrypt", "VarSub", "DeadCode VarSub ConstSub Encode", "DeadCode VarSub ConstSub Encrypt Encode"]
     projs = {}
     for d in json_data:
         fn = d['filename']
         if not projs.get(fn):
-            projs[fn] = []
+            projs[fn] = []        
         projs[fn].append(d)
+        
     
-    all_vals = []
+    rows = []
     for k, v in projs.items():
-        values = []
-        values.append(k)
+        row = [k[:-len(".zip")]] + ["-" for _ in range(len(columns))] # Row stats with project name
         for d in v:
-            obfuscation_methods = " ".join([dd[:1] for dd in d["obfuscation"]])
+            obfuscation_methods = " ".join([dd for dd in d["obfuscation"]])
             stats = d['data']['data']['attributes']['stats']
             detections = stats['malicious']
             undetected = stats['undetected']
-            rate = "{:.2f}".format(detections/undetected)
-            if(len(values)>=2):
-                orig = float(values[1])
-                new = detections/undetected
-                #if (new>orig):
-                #    rate = "\\textcolor{red}" + "{" + rate + "}"
-            values.append(rate)
-        all_vals.append([float(v) for v in values[1:]])
-
-        print(" & ".join(values) + " \\\\")
+            rate = "{:.2f}".format(detections/(undetected+detections))
+            # Add in correct position
+            if obfuscation_methods in columns:
+                column_num = 1+columns.index(obfuscation_methods)
+                row[column_num] = rate
+        rows.append(row)
+        print(" & ".join(row) + " \\\\")
     
     # CALCULATE AVG
-    values = ["Average"]
-    values.extend(["{:.2f}".format(sum([all_vals[j][i] for j in range(len(all_vals))])/len(all_vals)) for i in range(len(all_vals[0]))])
-    print(" & ".join(values) + " \\\\")
+    row = ["Average"] + ["0" for c in columns]
+    for i, c in enumerate(columns):
+        col_num = 1+i
+        vals = []
+        for r in rows:
+            v = r[col_num]
+            vals.append(float(v))
+        avg_for_column = "{:.2f}".format(sum(vals) / len(vals)) if len(vals) > 0 else "-"
+        row[col_num] = str(avg_for_column)
+    print(" & ".join(row) + " \\\\")
 
 def main():
     with open("data.json", "rt") as f:
