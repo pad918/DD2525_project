@@ -30,5 +30,5 @@ if __name__ == "__main__":
     for name, data in sorted_dict.items():
         hits = data['hits']
         scans = data['scans']
-        if (hits or scans) > 0:
+        if scans > 0:
             print(f"{name} & {hits} & {scans}  & {round(hits / scans, 2)} \\\\")
