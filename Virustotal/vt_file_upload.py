@@ -25,6 +25,16 @@ def upload_file(file_path, obfuscations):
         "accept": "application/json",
         "x-apikey": API_KEY
     }
+    if os.path.exists("data.json"):
+        while (True):
+            usr_in = input(
+                "A data.json file already exists, do you wanna delete it and generate a new one? (Y/N): ")
+            if usr_in in ["Y"]:
+                os.remove("data.json")
+                break
+            if usr_in in ["N"]:
+                break
+
     if not os.path.exists("data.json"):
         with open("data.json", "w") as f:
             json.dump({"uploads": []}, f, indent=4)
